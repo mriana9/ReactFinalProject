@@ -121,7 +121,7 @@ export default function Login() {
           <Box>
             <Typography variant="body2">
               <Link
-                component={Link} // if using react-router
+                component={Link}
                 to="/forgot-password"
                 underline="hover"
                 sx={{ cursor: "pointer" }}

@@ -24,13 +24,13 @@ const SendCodePage = () => {
 
   const submitVerifyCode = async (data) => {
 
-    console.log("Data", data); //Mariana@1
+    console.log("Data", data); 
 
     try {
       setLoading(true);
-      const res = await axios.post(
+      const res = await axios.patch(
         `${import.meta.env.VITE_BURL}/Account/SendCode`,
-      );
+      data);
       if (res.status === 200) {
         toast.success("Account verified successfully!", {
           position: "top-right",
