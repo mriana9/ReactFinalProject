@@ -6,6 +6,7 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import SendCodePage from "./pages/send-code-page/SendCodePage";
+import Product from "./pages/products/Product";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -28,9 +29,13 @@ const routes = createBrowserRouter([
         path: "/forgot-password",
         element: <ForgotPassword />,
       },
-         {
+      {
         path: "/send-code",
         element: <SendCodePage />,
+      },
+      {
+        path: "/product/:id",
+        element: <Product />,
       },
     ],
   },

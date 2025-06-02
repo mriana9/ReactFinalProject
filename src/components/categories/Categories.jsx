@@ -34,9 +34,9 @@ export default function Categories() {
 
   return (
     <>
-      <Grid container spacing={2} >
+      <Grid container spacing={2}>
         {categories.map((category) => (
-          <Grid size={{ xs: 6, md: 4, xl:3 }} key={category.id} user={category}>
+          <Grid size={{ xs: 12, md: 4, xl: 3 }} key={category.id}>
             <Card sx={{ minWidth: 275, mt: 2 }}>
               <CardContent>
                 <Typography
@@ -46,9 +46,6 @@ export default function Categories() {
                   {category.name}
                 </Typography>
               </CardContent>
-              {/* <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions> */}
             </Card>
           </Grid>
         ))}
