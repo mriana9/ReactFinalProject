@@ -38,6 +38,7 @@ export default function Login() {
           theme: "colored",
           transition: Slide,
         });
+        localStorage.setItem("userToken", res.data.token);
         navigate("/");
       } else {
         toast.error("Please Check Your Network and Try Again!", {
@@ -64,7 +65,7 @@ export default function Login() {
         theme: "colored",
         transition: Slide,
       });
-      console.error("Registration error:", error);
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }

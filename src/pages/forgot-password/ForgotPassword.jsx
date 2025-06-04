@@ -3,14 +3,12 @@ import {
   Button,
   InputAdornment,
   TextField,
-  Typography,
 } from "@mui/material";
 import Styles from "./forgotPassword.module.css";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PasswordIcon from "@mui/icons-material/Password";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { toast, Slide } from "react-toastify";
 import { useState } from "react";
 
