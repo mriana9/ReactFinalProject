@@ -1,6 +1,6 @@
 import React from "react";
 import Carts from "../../components/carts/Carts";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 
