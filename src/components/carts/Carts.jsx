@@ -150,7 +150,7 @@ export default function Carts() {
     }
   };
 
-  const deleteProducrFromCart = async (cartId) => {
+  const deleteProductFromCart = async (cartId) => {
     const userToken = localStorage.getItem("userToken");
     //console.log("User Token:", userToken);
     try {
@@ -197,6 +197,50 @@ export default function Carts() {
     }
   };
 
+  const ClearAll = async () => {
+    const userToken = localStorage.getItem("userToken");
+    //console.log("User Token:", userToken);
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BURL}/Carts/clearCart`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      if (res.status === 204) {
+        toast.success("Clear All Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        setCarts([]);
+      } else {
+        console.error("Failed to delete product from cart");
+      }
+    } catch (error) {
+      toast.error("Please Check Your Network and Try Again!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      console.log("Error", error);
+    }
+  };
+
   useEffect(() => {
     getCarts();
   }, []);
@@ -214,6 +258,15 @@ export default function Carts() {
 
   return (
     <>
+      <Box sx={{display:"flex", justifyContent:"end"}} >
+        <Button
+          sx={{ marginTop: "50px"}}
+          size="small"
+          onClick={() => ClearAll()}
+        >
+          All Carts
+        </Button>
+      </Box>
       <Grid container spacing={2}>
         {carts.map((cart) => (
           <Grid size={{ xs: 12, md: 12, xl: 12 }} key={cart.id}>
@@ -264,7 +317,7 @@ export default function Carts() {
                 <IconButton
                   color="error"
                   size="small"
-                  onClick={() => deleteProducrFromCart(cart.id)}
+                  onClick={() => deleteProductFromCart(cart.id)}
                 >
                   <Delete />
                 </IconButton>
