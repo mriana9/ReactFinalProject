@@ -2,7 +2,7 @@ import { Card, CardContent, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-export default function Categories() {
+export default function Category() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 

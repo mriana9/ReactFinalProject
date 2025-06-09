@@ -1,10 +1,10 @@
-import Categories from "../../components/categories/categories";
+import Category from "../../components/categories/Category";
 import Products from "../../components/products/Products";
 
 export default function Home() {
   return (
     <>
-      <Categories />
+      <Category />
       <Products />
     </>
   );
