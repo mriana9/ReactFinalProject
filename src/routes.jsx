@@ -8,6 +8,7 @@ import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import SendCodePage from "./pages/send-code-page/SendCodePage";
 import Product from "./pages/products/Products";
 import Cart from "./pages/cart/Cart";
+import Checkout from "./pages/checkout/Checkout";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +43,10 @@ const routes = createBrowserRouter([
         path: "/product/:id",
         element: <Product />,
       },
+      {
+        path: "/checkout",
+        element: <Checkout />,
+      }
     ],
   },
 ]);

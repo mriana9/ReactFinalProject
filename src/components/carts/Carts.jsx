@@ -12,11 +12,14 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { toast, Slide } from "react-toastify";
 
 export default function Carts() {
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   const getCarts = async () => {
     const userToken = localStorage.getItem("userToken");
@@ -32,6 +35,15 @@ export default function Carts() {
       if (res.status === 200) {
         setCarts(res.data.cartResponse);
         //console.log("Carts data:", res.data);
+        setTotalPrice(res.data.totalPrice);
+        //console.log("Total Price:", res.data.totalPrice);
+        let totalAllItems = 0;
+        res.data.cartResponse.forEach((item) => {
+          {
+            totalAllItems = totalAllItems + item.count;
+            setTotalItems(totalAllItems);
+          }
+        });
       } else {
         console.error("Failed to fetch carts");
       }
@@ -258,9 +270,9 @@ export default function Carts() {
 
   return (
     <>
-      <Box sx={{display:"flex", justifyContent:"end"}} >
+      <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
-          sx={{ marginTop: "50px"}}
+          sx={{ marginTop: "50px" }}
           size="small"
           onClick={() => ClearAll()}
         >
@@ -268,63 +280,82 @@ export default function Carts() {
         </Button>
       </Box>
       <Grid container spacing={2}>
-        {carts.map((cart) => (
-          <Grid size={{ xs: 12, md: 12, xl: 12 }} key={cart.id}>
-            <Card sx={{ minWidth: 275, mt: 2 }}>
-              <CardMedia
-                sx={{ height: 140 }}
-                image={cart.mainImg}
-                title={cart.name}
-                component="img"
-                alt={cart.name}
-              />
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  sx={{ color: "text.secondary", fontSize: 14 }}
-                >
-                  {cart.name}
-                </Typography>
-              </CardContent>
+        <Grid size={{ xs: 12, md: 6, xl: 6 }}>
+          {carts.map((cart) => (
+            <Grid size={{ xs: 12, md: 12, xl: 12 }} key={cart.id}>
+              <Card sx={{ minWidth: 275, mt: 2 }}>
+                <CardMedia
+                  sx={{ height: 140 }}
+                  image={cart.mainImg}
+                  title={cart.name}
+                  component="img"
+                  alt={cart.name}
+                />
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    sx={{ color: "text.secondary", fontSize: 14 }}
+                  >
+                    {cart.name}
+                  </Typography>
+                  <Typography variant="h5" component="div">
+                    {cart.price} $
+                  </Typography>
+                </CardContent>
 
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <CardActions>
-                  <IconButton
-                    size="small"
-                    onClick={() => increaseCart(cart.id)}
-                  >
-                    <Add />
-                  </IconButton>
-                </CardActions>
-                <Typography>{cart.count}</Typography>
-                <CardActions>
-                  <IconButton
-                    size="small"
-                    onClick={() => decreaseCart(cart.id)}
-                  >
-                    <Remove />
-                  </IconButton>
-                </CardActions>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  p: 2,
-                }}
-              >
-                <IconButton
-                  color="error"
-                  size="small"
-                  onClick={() => deleteProductFromCart(cart.id)}
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <CardActions>
+                    <IconButton
+                      size="small"
+                      onClick={() => increaseCart(cart.id)}
+                    >
+                      <Add />
+                    </IconButton>
+                  </CardActions>
+                  <Typography>{cart.count}</Typography>
+                  <CardActions>
+                    <IconButton
+                      size="small"
+                      onClick={() => decreaseCart(cart.id)}
+                    >
+                      <Remove />
+                    </IconButton>
+                  </CardActions>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                    p: 2,
+                  }}
                 >
-                  <Delete />
-                </IconButton>
-              </Box>
-            </Card>
-          </Grid>
-        ))}
+                  <IconButton
+                    color="error"
+                    size="small"
+                    onClick={() => deleteProductFromCart(cart.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Grid item sx={{ mt: 2 }}>
+          <h2>Cart Summary</h2>
+          <Typography variant="h6" color="text.secondary">
+            Total Items: {totalItems}
+          </Typography>
+          <Typography variant="h6" color="text.secondary">
+            Total Price: {totalPrice} $
+          </Typography>
+          <Button variant="contained" fullWidth color="primary" sx={{ mt: 2 }}
+          component={Link} to="/checkout">
+            Checkout
+          </Button>
+        </Grid>
       </Grid>
     </>
   );
