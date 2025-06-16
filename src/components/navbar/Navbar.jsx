@@ -10,12 +10,15 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Link } from "react-router";
-
-const pages = ["Register", "Login", "Cart"];
+import { Link, useNavigate } from "react-router";
+import { Slide, toast } from "react-toastify";
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const pagesGuest = ["Home ", "Register", "Login"];
+  const pagesAuth = ["Cart"];
+  const isLoggedIn = localStorage.getItem("userToken") ? true : false;
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -23,6 +26,22 @@ function Navbar() {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    navigate("/");
+    toast.success("Logout Successfully", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Slide,
+    });
   };
 
   return (
@@ -56,7 +75,7 @@ function Navbar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => (
+              {(isLoggedIn ? pagesAuth : pagesGuest).map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: "center" }}>
                     <Link
@@ -68,11 +87,16 @@ function Navbar() {
                   </Typography>
                 </MenuItem>
               ))}
+              {isLoggedIn ? (
+                <Button onClick={handleLogout} sx={{ my: 2 }}>
+                  Logout
+                </Button>
+              ) : null}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {(isLoggedIn ? pagesAuth : pagesGuest).map((page) => (
               <Link
                 key={page}
                 to={`/${page.toLowerCase()}`}
@@ -85,6 +109,11 @@ function Navbar() {
                 {page}
               </Link>
             ))}
+            {isLoggedIn ? (
+              <Button onClick={handleLogout} sx={{ my: 2, color: "white" }}>
+                Logout
+              </Button>
+            ) : null}
           </Box>
         </Toolbar>
       </Container>
