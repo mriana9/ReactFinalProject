@@ -15,7 +15,7 @@ import { Slide, toast } from "react-toastify";
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const pagesGuest = ["Home ", "Register", "Login"];
+  const pagesGuest = ["Home", "Register", "Login"];
   const pagesAuth = ["Cart"];
   const isLoggedIn = localStorage.getItem("userToken") ? true : false;
   const navigate = useNavigate();
