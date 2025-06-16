@@ -16,7 +16,11 @@ import { toast, Slide } from "react-toastify";
 import { useState } from "react";
 
 export default function Register() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const registerUser = async (data) => {
@@ -82,7 +86,7 @@ export default function Register() {
         {/* First Name Input Field */}
         <TextField
           label="First Name"
-          {...register("firstName")}
+          {...register("firstName", { required: "First name is required" })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -94,12 +98,14 @@ export default function Register() {
               ),
             },
           }}
+          helperText={errors.firstName ? errors.firstName.message : ""}
+          error={errors.firstName}
         />
 
         {/* Last Name Input Field */}
         <TextField
           label="Last Name"
-          {...register("lastName")}
+          {...register("lastName", { required: "Last name is required" })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -111,12 +117,14 @@ export default function Register() {
               ),
             },
           }}
+          helperText={errors.lastName ? errors.lastName.message : ""}
+          error={errors.lastName}
         />
 
         {/* User Name Input Field */}
         <TextField
           label="User Name"
-          {...register("userName")}
+          {...register("userName", { required: "User name is required" })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -128,12 +136,20 @@ export default function Register() {
               ),
             },
           }}
+          helperText={errors.userName ? errors.userName.message : ""}
+          error={errors.userName}
         />
 
         {/* Email Input Field */}
         <TextField
           label="Email"
-          {...register("email")}
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Invalid email address",
+            },
+          })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -145,13 +161,17 @@ export default function Register() {
               ),
             },
           }}
+          error={errors.email}
+          helperText={errors.email ? errors.email.message : ""}
         />
 
         {/* Password Input Field */}
         <TextField
           label="Password"
           type="password"
-          {...register("password")}
+          {...register("password", {
+            required: "Password is required",
+          })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -163,12 +183,16 @@ export default function Register() {
               ),
             },
           }}
+          error={errors.password}
+          helperText={errors.password ? errors.password.message : ""}
         />
 
         {/* Confirm Password Input Field */}
         <TextField
           label="confirm Password"
-          {...register("confirmPassword")}
+          {...register("confirmPassword", {
+            required: "Confirm password is required",
+          })}
           type="password"
           fullWidth
           sx={{ m: 1 }}
@@ -181,18 +205,24 @@ export default function Register() {
               ),
             },
           }}
+          error={errors.confirmPassword}
+          helperText={errors.confirmPassword ? errors.confirmPassword.message : ""}
         />
 
         {/* DateOfBirth Input Field */}
         <TextField
           label="Date of Birth"
-          {...register("birthOfDate")}
+          {...register("birthOfDate", {
+            required: "Date of birth is required",
+          })}
           type="date"
           fullWidth
           sx={{ m: 1 }}
           InputLabelProps={{
             shrink: true,
           }}
+          error ={errors.birthOfDate}
+          helperText={errors.birthOfDate ? errors.birthOfDate.message : ""}
         />
 
         <Box

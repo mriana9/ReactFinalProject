@@ -11,26 +11,29 @@ import Styles from "./sendCode.module.css";
 import { useForm } from "react-hook-form";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import PasswordIcon from "@mui/icons-material/Password";
-import NumbersIcon from '@mui/icons-material/Numbers';
+import NumbersIcon from "@mui/icons-material/Numbers";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const SendCodePage = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   const submitVerifyCode = async (data) => {
-
-    console.log("Data", data); 
+    // console.log("Data", data);
 
     try {
       setLoading(true);
       const res = await axios.patch(
         `${import.meta.env.VITE_BURL}/Account/SendCode`,
-      data);
+        data
+      );
       if (res.status === 200) {
         toast.success("Account verified successfully!", {
           position: "top-right",
@@ -48,7 +51,7 @@ const SendCodePage = () => {
         });
       }
     } catch (error) {
-      console.log("Network error", error)
+      console.log("Network error", error);
       toast.error("Network error. Please try again later.", {
         position: "top-right",
         autoClose: 5000,
@@ -76,7 +79,7 @@ const SendCodePage = () => {
       {/* OTP Input */}
       <TextField
         label="Code"
-        {...register("code")}
+        {...register("code", {required:"Code is required"})}
         fullWidth
         sx={{ mb: 2 }}
         InputProps={{
@@ -86,12 +89,17 @@ const SendCodePage = () => {
             </InputAdornment>
           ),
         }}
+        error={errors.code}
+        helperText={errors.code ? errors.code.message : ""}
       />
 
       {/* Email Input */}
       <TextField
         label="Email"
-        {...register("email")}
+        {...register("email", {required:"Email is required", pattern: {
+          value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          message: "Invalid email address",
+        }})}
         fullWidth
         sx={{ mb: 2 }}
         InputProps={{
@@ -101,13 +109,15 @@ const SendCodePage = () => {
             </InputAdornment>
           ),
         }}
+        error={errors.email}
+        helperText={errors.email ? errors.email.message : ""}
       />
 
       {/* Password Input */}
       <TextField
         label="Password"
         type="password"
-        {...register("password")}
+        {...register("password", {required:"Password is required"})}
         fullWidth
         sx={{ mb: 2 }}
         InputProps={{
@@ -117,13 +127,15 @@ const SendCodePage = () => {
             </InputAdornment>
           ),
         }}
+        error={errors.password}
+        helperText={errors.password ? errors.password.message : ""}
       />
 
       {/* Confirm Password Input */}
       <TextField
         label="Confirm Password"
         type="password"
-        {...register("ConfirmPassword")}
+        {...register("ConfirmPassword", {required:"Confirm Password is required"})}
         fullWidth
         sx={{ mb: 3 }}
         InputProps={{
@@ -133,6 +145,8 @@ const SendCodePage = () => {
             </InputAdornment>
           ),
         }}
+        error={errors.ConfirmPassword}
+        helperText={errors.ConfirmPassword ? errors.ConfirmPassword.message : ""}
       />
 
       {/* Submit Button */}

@@ -15,11 +15,14 @@ import { toast, Slide } from "react-toastify";
 import { useState } from "react";
 
 export default function Login() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const loginUser = async (data) => {
-
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BURL}/Account/Login`,
@@ -81,7 +84,13 @@ export default function Login() {
         {/* Email Input Field */}
         <TextField
           label="Email"
-          {...register("email")}
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Invalid email address",
+            },
+          })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -93,13 +102,22 @@ export default function Login() {
               ),
             },
           }}
+          helperText={errors.email ? errors.email.message : ""}
+          error={errors.email}
         />
+        {/* {errors.email && (
+          <Typography color="error" variant="caption" sx={{ ml: 1 }}>
+            {errors.email.message}
+          </Typography>
+        )} */}
 
         {/* Password Input Field */}
         <TextField
           label="Password"
           type="password"
-          {...register("password")}
+          {...register("password", {
+            required: "Password is required",
+          })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -111,7 +129,16 @@ export default function Login() {
               ),
             },
           }}
+          helperText={errors.password ? errors.password.message : ""}
+          error={errors.password}
         />
+        {/* {errors.password && (
+          <Typography color="error" variant="caption" sx={{ ml: 1 }}>
+            {errors.password.message}
+          </Typography>
+        )} */}
+
+        {/* Submit Button and Links */}
 
         <Box
           display="flex"
@@ -135,8 +162,9 @@ export default function Login() {
               variant="outlined"
               type="submit"
               className={Styles.submitButton}
+              disabled={loading}
             >
-              {loading ? "Login..." : "Login"}
+              {loading ? "Loading..." : "Login"}
             </Button>
           </Box>
 

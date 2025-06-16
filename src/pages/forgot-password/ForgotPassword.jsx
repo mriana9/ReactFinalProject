@@ -1,19 +1,18 @@
-import {
-  Box,
-  Button,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Box, Button, InputAdornment, TextField } from "@mui/material";
 import Styles from "./forgotPassword.module.css";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, Slide } from "react-toastify";
 import { useState } from "react";
 
 export default function ForgotPassword() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const registerUser = async (data) => {
@@ -77,7 +76,13 @@ export default function ForgotPassword() {
         {/* Email Input Field */}
         <TextField
           label="Email"
-          {...register("email")}
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Invalid email address",
+            },
+          })}
           fullWidth
           sx={{ m: 1 }}
           slotProps={{
@@ -89,6 +94,8 @@ export default function ForgotPassword() {
               ),
             },
           }}
+          error={errors.email}
+          helperText={errors.email ? errors.email.message : ""}
         />
 
         <Box
