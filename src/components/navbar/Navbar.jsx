@@ -20,7 +20,7 @@ import SunnyIcon from "@mui/icons-material/Sunny";
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const pagesGuest = ["Home", "Register", "Login"];
-  const pagesAuth = ["Cart"];
+  const pagesAuth = ["Home", "Cart"];
   const isLoggedIn = localStorage.getItem("userToken") ? true : false;
   const navigate = useNavigate();
 

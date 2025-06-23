@@ -1,35 +1,48 @@
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+//import axios from "axios";
+//import React, { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
 
 export default function Category() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
+  //const [categories, setCategories] = useState([]);
+  //const [loading, setLoading] = useState(false);
 
-  const getCategories = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BURL}/categories`);
-      //console.log("categories", res.data);
+  const {
+    loading,
+    error,
+    data: categories = [], 
+  } = useFetch(`${import.meta.env.VITE_BURL}/categories`);
 
-      if (res.status === 200) {
-        setCategories(res.data);
-      } else {
-        console.error("Failed to fetch categories");
-      }
-    } catch (error) {
-      console.log("Error", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //console.log("Categories:", categories);
 
-  useEffect(() => {
-    getCategories();
-  }, []);
+  // const getCategories = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.get(`${import.meta.env.VITE_BURL}/categories`);
+  //     //console.log("categories", res.data);
+
+  //     if (res.status === 200) {
+  //       setCategories(res.data);
+  //     } else {
+  //       console.error("Failed to fetch categories");
+  //     }
+  //   } catch (error) {
+  //     console.log("Error", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getCategories();
+  // }, []);
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (

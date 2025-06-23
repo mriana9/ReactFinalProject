@@ -15,6 +15,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast, Slide } from "react-toastify";
 import { CartContext } from "../../context/CartContext";
+import axiosAuth from "../../api/axiosAuthInstance.jsx";
 
 export default function Carts() {
   const [carts, setCarts] = useState([]);
@@ -24,15 +25,11 @@ export default function Carts() {
   const { cartItems, setCartItems } = useContext(CartContext);
 
   const getCarts = async () => {
-    const userToken = localStorage.getItem("userToken");
+    //const userToken = localStorage.getItem("userToken");
     //console.log("User Token:", userToken);
     try {
       setLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BURL}/Carts`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axiosAuth.get(`/Carts`);
 
       if (res.status === 200) {
         setCarts(res.data.cartResponse);
