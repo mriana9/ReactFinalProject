@@ -11,15 +11,17 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast, Slide } from "react-toastify";
+import { CartContext } from "../../context/CartContext";
 
 export default function Carts() {
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
+  const { cartItems, setCartItems } = useContext(CartContext);
 
   const getCarts = async () => {
     const userToken = localStorage.getItem("userToken");
@@ -188,6 +190,7 @@ export default function Carts() {
         });
         const updatedCarts = carts.filter((cart) => cart.id !== cartId);
         setCarts(updatedCarts);
+        setCartItems(cartItems - 1);
       } else {
         console.error("Failed to delete product from cart");
       }
@@ -234,6 +237,7 @@ export default function Carts() {
           transition: Slide,
         });
         setCarts([]);
+        setCartItems(0);
       } else {
         console.error("Failed to delete product from cart");
       }
@@ -351,8 +355,14 @@ export default function Carts() {
           <Typography variant="h6" color="text.secondary">
             Total Price: {totalPrice} $
           </Typography>
-          <Button variant="contained" fullWidth color="primary" sx={{ mt: 2 }}
-          component={Link} to="/checkout">
+          <Button
+            variant="contained"
+            fullWidth
+            color="primary"
+            sx={{ mt: 2 }}
+            component={Link}
+            to="/checkout"
+          >
             Checkout
           </Button>
         </Grid>

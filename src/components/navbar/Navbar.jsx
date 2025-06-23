@@ -12,13 +12,20 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link, useNavigate } from "react-router";
 import { Slide, toast } from "react-toastify";
-
+import { useContext } from "react";
+import { CartContext } from "../../context/CartContext";
+import { ThemeContext } from "../../context/ThemeContext";
+import ModeNightIcon from "@mui/icons-material/ModeNight";
+import SunnyIcon from "@mui/icons-material/Sunny";
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const pagesGuest = ["Home", "Register", "Login"];
   const pagesAuth = ["Cart"];
   const isLoggedIn = localStorage.getItem("userToken") ? true : false;
   const navigate = useNavigate();
+
+  const { cartItems } = useContext(CartContext);
+  const { mode, toggleTheme } = useContext(ThemeContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -82,7 +89,7 @@ function Navbar() {
                       to={`/${page.toLowerCase()}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
-                      {page}
+                      {page === "Cart" ? `Cart (${cartItems})` : page}
                     </Link>
                   </Typography>
                 </MenuItem>
@@ -106,7 +113,7 @@ function Navbar() {
                   margin: "20px",
                 }}
               >
-                {page}
+                {page === "Cart" ? `Cart (${cartItems})` : page}
               </Link>
             ))}
             {isLoggedIn ? (
@@ -114,6 +121,16 @@ function Navbar() {
                 Logout
               </Button>
             ) : null}
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>
+            <Box
+              onClick={toggleTheme}
+              variant="button"
+            
+              sx={{ my: 2, color: "white", display: "block", cursor: "pointer" }}
+            >
+              {mode === "light" ? <ModeNightIcon /> : <SunnyIcon />}
+            </Box>
           </Box>
         </Toolbar>
       </Container>

@@ -11,6 +11,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { toast, Slide } from "react-toastify";
+import { useContext } from "react";
+import { CartContext } from "../../context/CartContext";
 
 export default function Product() {
   const { id } = useParams("id");
@@ -18,6 +20,8 @@ export default function Product() {
 
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const {cartItems, setCartItems} = useContext(CartContext);
 
   const getProductId = async () => {
     try {
@@ -65,6 +69,8 @@ export default function Product() {
           theme: "colored",
           transition: Slide,
         });
+
+        setCartItems(cartItems + 1);
       } else {
         toast.error("Please Check Your Network and Try Again!", {
           position: "top-right",
