@@ -10,18 +10,22 @@ import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { toast, Slide } from "react-toastify";
-import { useContext } from "react";
+//import { toast, Slide } from "react-toastify";
+//import { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import axiosAuth from "../../api/axiosAuthInstance";
+import { Circle, LocalDining } from "@mui/icons-material";
 
 export default function Product() {
   const { id } = useParams("id");
   //console.log("Product ID:", id);
+  const queryClient = new QueryClient();
 
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const {cartItems, setCartItems} = useContext(CartContext);
+  //const { cartItems, setCartItems } = useContext(CartContext);
 
   const getProductId = async () => {
     try {
@@ -42,65 +46,81 @@ export default function Product() {
       setLoading(false);
     }
   };
-  const addToCard = async (productId) => {
-    //console.log("Add to cart clicked for product ID:", productId);
-    const userToken = localStorage.getItem("userToken");
+  // const addToCard = async (productId) => {
+  //   //console.log("Add to cart clicked for product ID:", productId);
+  //   const userToken = localStorage.getItem("userToken");
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BURL}/Carts/${productId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
-      if (res.status === 200) {
-        setLoading(true);
-        toast.success("Add to Cart Successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Slide,
-        });
+  //   try {
+  //     const res = await axios.post(
+  //       `${import.meta.env.VITE_BURL}/Carts/${productId}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${userToken}`,
+  //         },
+  //       }
+  //     );
+  //     if (res.status === 200) {
+  //       setLoading(true);
+  //       toast.success("Add to Cart Successfully", {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: false,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //         transition: Slide,
+  //       });
 
-        setCartItems(cartItems + 1);
-      } else {
-        toast.error("Please Check Your Network and Try Again!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Slide,
-        });
-      }
-    } catch (error) {
-      toast.error("Please Check Your Network and Try Again!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Slide,
+  //       setCartItems(cartItems + 1);
+  //     } else {
+  //       toast.error("Please Check Your Network and Try Again!", {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: false,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //         transition: Slide,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     toast.error("Please Check Your Network and Try Again!", {
+  //       position: "top-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: false,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "colored",
+  //       transition: Slide,
+  //     });
+  //     console.error("Add to cart error:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+ // const addToCard = async () => {};
+
+  const addToCardMutation = useMutation({
+    mutationFn: (productId) => {
+      return axiosAuth.post(`${import.meta.env.VITE_BURL}/Carts/${productId}`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["cartItems"],
       });
-      console.error("Add to cart error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onError: (error) => {
+      console.error("Add to cart error:", error.message);
+    },
+  });
 
   useEffect(() => {
     getProductId();
@@ -144,12 +164,14 @@ export default function Product() {
             <ShareIcon />
           </IconButton>
           <IconButton
+
             onClick={() => {
-              addToCard(product.id);
+              addToCardMutation.mutate(product.id);
             }}
             aria-label="share"
+            disabled={addToCardMutation.isLoading}
           >
-            <ShoppingCartIcon />
+            {addToCardMutation.isPending ? <Circle /> :  <ShoppingCartIcon />}
           </IconButton>
         </CardActions>
       </Card>

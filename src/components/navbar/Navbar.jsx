@@ -17,14 +17,17 @@ import { CartContext } from "../../context/CartContext";
 import { ThemeContext } from "../../context/ThemeContext";
 import ModeNightIcon from "@mui/icons-material/ModeNight";
 import SunnyIcon from "@mui/icons-material/Sunny";
+import axiosAuth from "../../api/axiosAuthInstance";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const pagesGuest = ["Home", "Register", "Login"];
-  const pagesAuth = ["Home", "Cart"];
+  const pagesAuth = ["Cart"];
   const isLoggedIn = localStorage.getItem("userToken") ? true : false;
   const navigate = useNavigate();
+  const queryClient =  useQueryClient();
 
-  const { cartItems } = useContext(CartContext);
+  //const { cartItems } = useContext(CartContext);
   const { mode, toggleTheme } = useContext(ThemeContext);
 
   const handleOpenNavMenu = (event) => {
@@ -50,6 +53,20 @@ function Navbar() {
       transition: Slide,
     });
   };
+
+  const fetchCartItem = async () => {
+    const { data } = await axiosAuth.get("/Carts");
+    return data.cartResponse;
+  };
+
+  useQuery({
+    queryKey: ["cartItems"],
+    queryFn: fetchCartItem,
+    staleTime: 0,
+  });
+
+  const data = queryClient.getQueryData(["cartItems"]);
+  const cartItems = data?.length;
 
   return (
     <AppBar position="static">
@@ -126,8 +143,12 @@ function Navbar() {
             <Box
               onClick={toggleTheme}
               variant="button"
-            
-              sx={{ my: 2, color: "white", display: "block", cursor: "pointer" }}
+              sx={{
+                my: 2,
+                color: "white",
+                display: "block",
+                cursor: "pointer",
+              }}
             >
               {mode === "light" ? <ModeNightIcon /> : <SunnyIcon />}
             </Box>
